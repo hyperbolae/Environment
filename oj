@@ -1,0 +1,36 @@
+#!/bin/bash
+
+function empty_ext() {
+    echo 'Error: No extension found' 1>&2
+    exit 1
+}
+
+if [[ $# -eq 0 ]]; then
+    echo 'Usage: oj <file>' 1>&2
+    exit 1
+fi
+
+if [[ $1 != *.* ]]; then
+    empty_ext
+fi
+
+fn=${1%.*}
+fn=${fn##*/}
+ext=${1##*.}
+
+if [[ -z $ext ]]; then
+    empty_ext
+fi
+
+if [[ -z $fn ]]; then
+    echo 'Error: Empty filename' 1>&2
+    exit 1
+fi
+
+case $ext in
+    c)    gcc -o "/tmp/$fn" "$1" && "/tmp/$fn" ;;
+    cpp)  g++ -o "/tmp/$fn" "$1" && "/tmp/$fn" ;;
+    java) javac -d /tmp/ "$1" && java -cp /tmp/ "$fn" ;;
+    py)   python "$1" ;;
+    *)    echo Unknown extension: $ext 1>&2 ;;
+esac

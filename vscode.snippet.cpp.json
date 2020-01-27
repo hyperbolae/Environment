@@ -1,0 +1,34 @@
+{
+	"Basic CP snippet": {
+		"prefix": "#include <bits/stdc++.h>",
+		"body": [
+			"#include <bits/stdc++.h>",
+			"using namespace std;",
+			"typedef long long ll;",
+			"typedef pair<int, int> pii;",
+			"#define x first",
+			"#define y second",
+			"#define all(v) v.begin(), v.end()",
+			"#define ms(v) memset(v, 0, sizeof(v))",
+			"#define mss(v) memset(v, -1, sizeof(v))",
+			"",
+			"int main() {",
+			"\tcin.tie(0), ios::sync_with_stdio(0);",
+			"\t$0",
+			"\t",
+			"\treturn 0;",
+			"}"
+		]
+	},
+	"Fast I/O": {
+		"prefix": "cin.tie(0)",
+		"body": "cin.tie(0), ios::sync_with_stdio(0);"
+	},
+	"Simple Cp snippet": {
+		"prefix": "#include <bits/stdc++.h>",
+		"body": [
+			"#include <bits/stdc++.h>",
+			"using namespace std;"
+		]
+	}
+}
