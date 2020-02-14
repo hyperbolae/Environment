@@ -24,7 +24,7 @@
 		"prefix": "cin.tie(0)",
 		"body": "cin.tie(0), ios::sync_with_stdio(0);"
 	},
-	"Simple Cp snippet": {
+	"Simple CP snippet": {
 		"prefix": "#include <bits/stdc++.h>",
 		"body": [
 			"#include <bits/stdc++.h>",
