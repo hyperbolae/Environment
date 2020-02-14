@@ -1,17 +1,16 @@
 #!/bin/bash
 
-function empty_ext() {
-    echo 'Error: No extension found' 1>&2
-    exit 1
+function err() {
+    >&2 echo "$1";
+    exit 1;
 }
 
 if [[ $# -eq 0 ]]; then
-    echo 'Usage: oj <file>' 1>&2
-    exit 1
+    err 'Usage: oj <file.c|cpp|java|py>'
 fi
 
 if [[ $1 != *.* ]]; then
-    empty_ext
+    err "Error: no extension found"
 fi
 
 fn=${1%.*}
@@ -19,12 +18,11 @@ fn=${fn##*/}
 ext=${1##*.}
 
 if [[ -z $ext ]]; then
-    empty_ext
+    err "Error: no extension found"
 fi
 
 if [[ -z $fn ]]; then
-    echo 'Error: Empty filename' 1>&2
-    exit 1
+    err "Error: empty file name"
 fi
 
 case $ext in
@@ -32,5 +30,5 @@ case $ext in
     cpp)  g++ -o "/tmp/$fn" "$1" && "/tmp/$fn" ;;
     java) javac -d /tmp/ "$1" && java -cp /tmp/ "$fn" ;;
     py)   python "$1" ;;
-    *)    echo Unknown extension: $ext 1>&2 ;;
+    *)    err "Error: unsopprted extension: $ext" ;;
 esac
