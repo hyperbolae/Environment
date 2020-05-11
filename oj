@@ -36,10 +36,10 @@ function require_start_time() {
 }
 
 function require_timeout() {
-	if [[ $tle == "-1" ]]; then 
-		"$1"
+	if [[ $tle == "-1" ]]; then
+		$1
 	else 
-		timeout $tle "$1" || {
+		timeout $tle $1 || {
 			echo -e "\e[101mTime Limit Exceed!\e[0m"
 			exit -1
 		}
@@ -49,18 +49,18 @@ function require_timeout() {
 case $ext in
     c)    	gcc -o "/tmp/$fn" -O2 "$1"
 		  	require_start_time
-			require_timeout "\"/tmp/$fn"\" 
+			require_timeout "/tmp/$fn" 
 			;;
     cpp)  	g++ -o "/tmp/$fn" -O2 "$1"
 			require_start_time 
 			require_timeout "/tmp/$fn"
 			;;
-    java) 	javac -d /tmp/ "$1"
+    java) 	javac -d /tmp/ $1
 			require_start_time
-			require_timeout "java -cp /tmp/ \"$fn\""
+			require_timeout "java -cp /tmp/ $fn"
 			;;
     py)   	require_start_time
-			reqruire_timeout "python \"$1\"" 
+			require_timeout "python $1" 
 			;;
     *)    	echo Unknown extension: "$ext"
 			exit -1
