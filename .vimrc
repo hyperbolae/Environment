@@ -14,6 +14,7 @@ set history=1000
 set wildmode=longest,list,full
 set wildignorecase
 set backspace=2
+set expandtab
 syntax on
 
 " map Ctrl-L to be nohl, clear search highlight
@@ -24,3 +25,4 @@ nnoremap <c-a> :%y+<cr>
 autocmd Filetype css setlocal tabstop=2 shiftwidth=2
 autocmd Filetype html setlocal tabstop=2 shiftwidth=2
 autocmd Filetype json setlocal tabstop=2 shiftwidth=2
+autocmd Filetype sh setlocal tabstop=2 shiftwidth=2

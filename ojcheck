@@ -9,14 +9,15 @@ NC='\033[0m'
 
 mkdir -p /tmp/ojcheck/
 for f in $secret_dir/*.in; do
-    cat $f > /tmp/ojcheck/input
-    cat ${f%.*}.ans >> /tmp/ojcheck/input
-    oj $checker < /tmp/ojcheck/input 2> /tmp/ojcheck/error
-    res=$?
-    basename=${f%.*}
-    basename=$(basename -- "$basename")
-    if [[ $res -eq 0 ]]; then echo -e "$basename: ${AC}AC$NC";
-        elif [[ $res -eq 255 ]]; then echo -e "$basename: ${WA}WA$NC";
-        else reason=$(cat /tmp/ojcheck/error); echo -e "$basename: $RE$reason$NC";
-    fi
+  cat $f > /tmp/ojcheck/input
+  cat ${f%.*}.ans >> /tmp/ojcheck/input
+  oj $checker < /tmp/ojcheck/input 2> /tmp/ojcheck/error
+  res=$?
+  basename=${f%.*}
+  basename=$(basename -- "$basename")
+  if [[ $res -eq 0 ]]; then echo -e "$basename: ${AC}AC$NC";
+    elif [[ $res -eq 255 ]]; then echo -e "$basename: ${WA}WA$NC";
+    else reason=$(cat /tmp/ojcheck/error); echo -e "$basename: $RE$reason$NC";
+  fi
 done
+
