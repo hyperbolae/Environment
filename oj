@@ -6,6 +6,12 @@ function usage() {
   exit -1
 }
 
+function has_space() {
+  if [[ $# == 1 ]]; then return 0
+  else return 1
+  fi
+}
+
 if [[ $# -eq 0 ]]; then usage; fi
 
 tle=-1
@@ -13,23 +19,33 @@ vt=0
 
 while getopts :vt: opt ${@:2}; do
   case $opt in
-  v)  vt=1  
+  v)  vt=1
       ;;
-  t)  tle=$OPTARG 
+  t)  tle=$OPTARG
       ;;
-  *)  usage   
+  *)  usage
       ;;
   esac
 done
 
+# Check if filename is empty or contains spaces
+if [[ -z "$1" ]]; then usage; fi
+has_space "$1" || {
+  echo 'Filename could not have spaces'
+  exit -1
+}
+
+# Validate file names
 fn=${1%.*}
 fn=${fn##*/}
 ext=${1##*.}
-
 # No extension specify
-if [[ -z $ext ]]; then echo 'No extension found'; exit -1; fi
+if [[ $fn == $1 || -z $ext ]]; then echo 'No extension found'; exit -1; fi
 # Empty source filename
 if [[ -z $fn ]]; then usage; fi
+# Unexist or unreadable file
+if [[ ! -r $1 ]]; then echo 'File not exists or unreadable'; exit -1; fi
+
 
 function require_start_time() {
   if [[ $vt -eq 1 ]]; then start_time=$(date +%s%N); fi
@@ -38,7 +54,7 @@ function require_start_time() {
 function require_timeout() {
   if [[ $tle == "-1" ]]; then
     $1
-  else 
+  else
     timeout $tle $1 || {
       echo -e "\e[101mTime Limit Exceed!\e[0m"
       exit -1
@@ -47,29 +63,36 @@ function require_timeout() {
 }
 
 case $ext in
-  c)     gcc -o "/tmp/$fn" -O2 "$1"
+  c)     gcc -o /tmp/$fn -O2 $1
          require_start_time
-         require_timeout "/tmp/$fn" 
+         require_timeout /tmp/$fn
+         rm /tmp/$fn
          ;;
-  cpp)   g++ -o "/tmp/$fn" -O2 "$1"
-         require_start_time 
-         require_timeout "/tmp/$fn"
+  cpp)   g++ -o /tmp/$fn -O2 $1
+         require_start_time
+         require_timeout /tmp/$fn
+         rm /tmp/$fn
          ;;
   java)  javac -d /tmp/ $1
          require_start_time
          require_timeout "java -cp /tmp/ $fn"
+         /tmp/$fn.class
          ;;
   py)    require_start_time
-         require_timeout "python $1" 
+         require_timeout "python $1"
          ;;
-  *)     echo Unknown extension: "$ext"
+  kt)    kotlinc $1 -include-runtime -d /tmp/$fn.jar
+         require_start_time
+         require_timeout "java -jar /tmp/$fn.jar"
+         rm /tmp/$fn.jar
+         ;;
+  *)     echo Unknown extension: $ext
          exit -1
          ;;
 esac
 
-if [[ $vt -eq 1 ]]; then 
+if [[ $vt -eq 1 ]]; then
   end_time=$(date +%s%N);
   cost=$((($end_time - $start_time)/1000000))
   echo "$cost ms"
 fi
-
