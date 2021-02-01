@@ -26,3 +26,13 @@ autocmd Filetype css setlocal tabstop=2 shiftwidth=2
 autocmd Filetype html setlocal tabstop=2 shiftwidth=2
 autocmd Filetype json setlocal tabstop=2 shiftwidth=2
 autocmd Filetype sh setlocal tabstop=2 shiftwidth=2
+
+" Use mouse scroll
+set mouse=a
+
+" Fix starting in replace mode
+" https://github.com/microsoft/terminal/issues/1637
+set t_u7=
+
+colorscheme slate
+
