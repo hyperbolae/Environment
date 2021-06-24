@@ -1,10 +1,21 @@
-#!/bin/bash
+#!/bin/bash -e
 
-doc="document"
-video="video"
-audio="audio"
-img="image"
-pdf="pdf"
+# To convert file from foramt A to B
+# Usage: qconv <src> <dst>
+# Example:
+#        qconv homura.mp4 homura.mp3
+# Supported types:
+#        Music: mp3|wav
+#        Video: 
+# Supported conversion:
+#        Music -> Music
+#        Video -> Music
+
+readonly doc="document"
+readonly video="video"
+readonly audio="audio"
+readonly image="image"
+readonly pdf="pdf"
 
 function err() {
   >&2 echo "$1";
@@ -13,7 +24,7 @@ function err() {
 
 function type() {
   case "$1" in
-    jpg | jpeg | png)  echo $img ;;
+    jpg | jpeg | png)  echo $image ;;
     doc | docx | ppt | pptx | xls | xlsx | odf) echo $doc ;;
     pdf) echo $pdf ;;
     mp3 | wav) echo $audio ;;
@@ -28,8 +39,8 @@ function conv() {
 
   if [[ $typeIn == $doc ]] && [[ $typeOut == $pdf ]]; then
     unoconv -o "$2" "$1"
-  elif [[ $typeIn == $img ]]; then
-    if [[ $typeOut == $pdf ]] || [[ $typeOut == $img ]]; then
+  elif [[ $typeIn == $image ]]; then
+    if [[ $typeOut == $pdf ]] || [[ $typeOut == $image ]]; then
       convert "$1" "$2"
     fi
   elif [[ $typeOut == $audio ]]; then
@@ -44,7 +55,7 @@ function conv() {
 }
 
 if [[ $# -ne 2 ]]; then
-  err 'usage: <source> <dest>'
+  err 'usage: qconv <source> <dest>'
 fi
 
 extIn=${1##*.}

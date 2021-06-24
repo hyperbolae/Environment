@@ -1,3 +1,5 @@
+" Or you can put in /etc/vim/vimrc for global settings
+
 " From Danny Huang
 " https://github.com/denny0224/.vim/blob/master/.vimrc
 
@@ -16,6 +18,7 @@ set wildignorecase
 set backspace=2
 set expandtab
 syntax on
+colorscheme slate
 
 " map Ctrl-L to be nohl, clear search highlight
 nnoremap <c-l> :nohl<cr>
@@ -33,6 +36,3 @@ set mouse=a
 " Fix starting in replace mode
 " https://github.com/microsoft/terminal/issues/1637
 set t_u7=
-
-colorscheme slate
-

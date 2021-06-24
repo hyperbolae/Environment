@@ -1,5 +1,11 @@
-#!/bin/bash
-set -e
+#!/bin/bash -e
+
+# Usage: oj <filename>
+# For example:
+#     oj pA.cpp
+#     oj pA.py
+#     oj Main.java
+#     oj Main.kt
 
 function usage() {
   echo 'Usage: oj <file> [-v] [-t <tle>]'
@@ -63,12 +69,14 @@ function require_timeout() {
 }
 
 case $ext in
-  c)     gcc -o /tmp/$fn -O2 $1
+  # hy flag is for defining my macros
+  c)     gcc -Dhy -o /tmp/$fn -O2 $1
          require_start_time
          require_timeout /tmp/$fn
          rm /tmp/$fn
          ;;
-  cpp)   g++ -o /tmp/$fn -O2 $1
+  # hy flag is for defining my macros
+  cpp)   g++ -Dhy -o /tmp/$fn -O2 $1
          require_start_time
          require_timeout /tmp/$fn
          rm /tmp/$fn
