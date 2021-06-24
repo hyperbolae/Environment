@@ -1,106 +1,80 @@
-#!/bin/bash -e
-
-# Usage: oj <filename>
-# For example:
-#     oj pA.cpp
-#     oj pA.py
-#     oj Main.java
-#     oj Main.kt
-
-function usage() {
-  echo 'Usage: oj <file> [-v] [-t <tle>]'
-  exit -1
+{
+	"CP0": {
+		"prefix": "#include <bits/stdc++.h>",
+		"body": [
+			"#include <bits/stdc++.h>",
+			"using namespace std;"
+		]
+	},
+	"CP1": {
+		"prefix": "#include <bits/stdc++.h>",
+		"body": [
+			"#include <bits/stdc++.h>",
+			"using namespace std;",
+			"typedef long long ll;",
+			"typedef pair<int, int> pii;",
+			"#define x first",
+			"#define y second",
+			"#define all(v) v.begin(), v.end()",
+			"#define ms(v) memset(v, 0, sizeof(v))",
+			"#define mss(v) memset(v, -1, sizeof(v))",
+			"",
+			"int main() {",
+			"\tcin.tie(0), ios::sync_with_stdio(0);",
+			"\t$0",
+			"\t",
+			"\treturn 0;",
+			"}"
+		]
+	},
+	"CP2": {
+		"prefix": "#include <bits/stdc++.h>",
+		"body": [
+			"// clang-format off",
+			"#include <bits/stdc++.h>",
+			"using namespace std;",
+			"typedef long long ll;",
+			"// typedef __int128_t lll;",
+			"// typedef __uint128_t ulll;",
+			"typedef pair<int, int> pii;",
+			"typedef pair<ll, ll> pll;",
+			"#define x first",
+			"#define y second",
+			"#define all(v) v.begin(), v.end()",
+			"#define ms(v) memset(v, 0, sizeof(v))",
+			"#define mss(v) memset(v, -1, sizeof(v))",
+			"#define len(v) int(v.size())",
+			" ",
+			"#ifdef hy",
+			"#define nosyncio() // dummy function",
+			"#define RED        \"\\033[1;31m\"",
+			"#define UN         \"\\033[0m\"",
+			"#define debug(a)   { cerr << RED << #a << \"=\" << a << UN << endl; }",
+			"#define depair(a)  { cerr << RED << #a << \"=(\" << a.x << \", \" << a.y << \")\" << UN << endl; }",
+			"#define devec(a)   { int __first__ = 1; cerr << RED << #a << \"=\"; for (auto& val: a) { cerr << \",{\"[__first__] << val; __first__ = 0; } cerr << \"}\" << UN << endl; }",
+			"#define devpp(a)   { int __first__ = 1; cerr << RED << #a << \"=\"; for (auto& val: a) { cerr << \",{\"[__first__] << '(' << val.x << ',' << val.y << ')'; __first__ = 0; } cerr << \"}\" << UN << endl; }",
+			"#define ass(a)     assert(a)",
+			"#else",
+			"#define endl       '\\n'",
+			"#define nosyncio() cin.tie(0), ios::sync_with_stdio(0)",
+			"#define debug(a)   // dummy function",
+			"#define depair(a)  // dummy function",
+			"#define devec(a)   // dummy function",
+			"#define devpp(a)   // dummy function",
+			"#define ass(a)     // dummy function",
+			"#endif",
+			"// clang-format on",
+			" ",
+			"int main() {",
+			"    nosyncio();",
+			"    $0",
+			"    return 0;",
+			"}"
+		],
+	},
+	"Fast I/O": {
+		"prefix": "cin.tie(0)",
+		"body": "cin.tie(0), ios::sync_with_stdio(0);"
+	},
 }
 
-function has_space() {
-  if [[ $# == 1 ]]; then return 0
-  else return 1
-  fi
-}
-
-if [[ $# -eq 0 ]]; then usage; fi
-
-tle=-1
-vt=0
-
-while getopts :vt: opt ${@:2}; do
-  case $opt in
-  v)  vt=1
-      ;;
-  t)  tle=$OPTARG
-      ;;
-  *)  usage
-      ;;
-  esac
-done
-
-# Check if filename is empty or contains spaces
-if [[ -z "$1" ]]; then usage; fi
-has_space "$1" || {
-  echo 'Filename could not have spaces'
-  exit -1
-}
-
-# Validate file names
-fn=${1%.*}
-fn=${fn##*/}
-ext=${1##*.}
-# No extension specify
-if [[ $fn == $1 || -z $ext ]]; then echo 'No extension found'; exit -1; fi
-# Empty source filename
-if [[ -z $fn ]]; then usage; fi
-# Unexist or unreadable file
-if [[ ! -r $1 ]]; then echo 'File not exists or unreadable'; exit -1; fi
-
-
-function require_start_time() {
-  if [[ $vt -eq 1 ]]; then start_time=$(date +%s%N); fi
-}
-
-function require_timeout() {
-  if [[ $tle == "-1" ]]; then
-    $1
-  else
-    timeout $tle $1 || {
-      echo -e "\e[101mTime Limit Exceed!\e[0m"
-      exit -1
-    }
-  fi
-}
-
-case $ext in
-  # hy flag is for defining my macros
-  c)     gcc -Dhy -o /tmp/$fn -O2 $1
-         require_start_time
-         require_timeout /tmp/$fn
-         rm /tmp/$fn
-         ;;
-  # hy flag is for defining my macros
-  cpp)   g++ -Dhy -o /tmp/$fn -O2 $1
-         require_start_time
-         require_timeout /tmp/$fn
-         rm /tmp/$fn
-         ;;
-  java)  javac -d /tmp/ $1
-         require_start_time
-         require_timeout "java -cp /tmp/ $fn"
-         /tmp/$fn.class
-         ;;
-  py)    require_start_time
-         require_timeout "python $1"
-         ;;
-  kt)    kotlinc $1 -include-runtime -d /tmp/$fn.jar
-         require_start_time
-         require_timeout "java -jar /tmp/$fn.jar"
-         rm /tmp/$fn.jar
-         ;;
-  *)     echo Unknown extension: $ext
-         exit -1
-         ;;
-esac
-
-if [[ $vt -eq 1 ]]; then
-  end_time=$(date +%s%N);
-  cost=$((($end_time - $start_time)/1000000))
-  echo "$cost ms"
-fi
